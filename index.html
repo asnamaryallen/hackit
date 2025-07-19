@@ -3,75 +3,203 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dyslexia-Friendly Reader</title>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Dyslexic&display=swap" rel="stylesheet">
+  <title>CalmMind Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Open Dyslexic', sans-serif;
-      background-color: #f2f3f5;
-      color: #000;
-      line-height: 1.8;
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
-      font-size: 1.2rem;
+      font-family: 'Lexend', sans-serif;
+      background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: blur(5px);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    h1, h2, h3 {
+    .header {
+      background-color: rgba(255, 255, 255, 0.75);
+      padding: 16px;
+      text-align: center;
+      font-size: 1.3rem;
       font-weight: bold;
-      color: #004080;
+      border-radius: 0 0 20px 20px;
     }
 
-    p {
-      margin-bottom: 1.5rem;
-      background-color: #ffffff;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    .mood-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      margin: 10px;
     }
 
-    p:hover {
-      background-color: #e6f2ff;
+    .mood {
+      background-color: #dceefc;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .mood:hover {
+      background-color: #c3dafe;
     }
 
-    .content-toggle {
-      margin: 1rem 0;
+    .chat-container {
+      background-color: rgba(255, 255, 255, 0.7);
+      margin: 10px;
+      padding: 15px;
+      border-radius: 20px;
+      height: 45vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
 
-    label {
-      font-weight: bold;
-      margin-right: 0.5rem;
+    .bot-message, .user-message {
+      padding: 10px 15px;
+      margin: 10px;
+      max-width: 70%;
+      border-radius: 15px;
+      word-wrap: break-word;
     }
 
-    input[type="range"] {
-      width: 200px;
+    .bot-message {
+      background-color: #f0f4ff;
+      align-self: flex-start;
     }
 
-    .highlight {
-      background-color: #ffff99;
+    .user-message {
+      background-color: #ffeaea;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    .input-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      gap: 10px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 20px 20px 0 0;
+    }
+
+    input {
+      flex: 1;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      font-size: 1rem;
+    }
+
+    button.send-btn {
+      border-radius: 20px;
+      padding: 10px 15px;
+      border: none;
+      background-color: #7ac9f9;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
-  <h1>🧠 Dyslexia-Friendly Reader</h1>
+    <script>
+  const userName = localStorage.getItem("cherryUser") || "there";
+  document.getElementById("chatHeader").innerText = `🍒 Cherry – Hello, ${userName}`;
+  document.querySelector(".chat-container").insertAdjacentHTML("beforeend", `
+    <div class="bot-message">Hi ${userName}, I’m Cherry. How are you feeling today?</div>
+  `);
+</script>
 
-  <div class="content-toggle">
-    <label for="fontSizeRange">Font Size:</label>
-    <input type="range" id="fontSizeRange" min="16" max="30" value="20" oninput="adjustFontSize(this.value)">
+
+  <div class="header">🌸 Cherry– I’m here for you</div>
+
+  <div class="mood-buttons">
+    <button class="mood">😢 Sad</button>
+    <button class="mood">😰 Anxious</button>
+    <button class="mood">😠 Angry</button>
+    <button class="mood">😞 Lonely</button>
+    <button class="mood">🌀 Overwhelmed</button>
   </div>
 
-  <p class="text">Reading can be easier and more enjoyable with the right support. This page is designed to reduce cognitive strain and help readers focus on text comfortably.</p>
+  <div class="chat-container" id="chat">
+    <div class="bot-message">Hello, how are you feeling today? You can select a mood or type below.</div>
+  </div>
 
-  <p class="text">We use a dyslexia-friendly font, soft contrast, and high line spacing. You can adjust the font size for better readability.</p>
-
-  <p class="text">Hover over any text block to highlight it. This helps with focus and prevents line skipping, especially for users with tracking difficulties.</p>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Type here to chat..." />
+    <button class="send-btn" onclick="handleUserInput()">Send</button>
+  </div>
 
   <script>
-    function adjustFontSize(size) {
-      document.querySelectorAll('.text').forEach(p => {
-        p.style.fontSize = size + 'px';
-      });
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('userInput');
+
+    const moodResponses = {
+      "sad": "I'm really sorry you're feeling this way. Want to try a calming breathing exercise?",
+      "anxious": "Anxiety can be heavy. Let's take a deep breath together. Inhale… Exhale… Want more grounding tips?",
+      "angry": "It's okay to feel angry. Try writing what you're feeling or squeezing a soft pillow.",
+      "lonely": "You're not alone right now. I'm here with you. Want to hear something uplifting?",
+      "overwhelmed": "Everything might feel like too much right now. Let's slow down. One thing at a time. Want a short calming tip?"
+    };
+
+    function appendMessage(message, sender = 'bot') {
+      const msg = document.createElement('div');
+      msg.className = sender === 'bot' ? 'bot-message' : 'user-message';
+      msg.innerText = message;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
     }
+
+    function handleUserInput() {
+      const text = input.value.trim();
+      if (text === '') return;
+
+      appendMessage(text, 'user');
+      input.value = '';
+
+      setTimeout(() => {
+        respondToUser(text);
+      }, 600);
+    }
+
+    function respondToUser(text) {
+      const lower = text.toLowerCase();
+      if (lower.includes('help')) {
+        appendMessage("If you're in crisis, please reach out. 📞 India Helpline: 9152987821");
+      } else if (lower.includes('breathe')) {
+        appendMessage("Sure. Inhale slowly... hold... exhale. Repeat 3 times. 🌬️");
+      } else if (lower.includes('quote')) {
+        appendMessage("💬 'You are braver than you believe, stronger than you seem, and smarter than you think.'");
+      } else {
+        appendMessage("I'm here with you. Would you like a breathing exercise, a quote, or to talk about your feelings?");
+      }
+    }
+
+    document.querySelectorAll('.mood').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mood = btn.innerText.split(' ')[1].toLowerCase();
+        appendMessage(`I'm feeling ${mood}.`, 'user');
+        setTimeout(() => {
+          appendMessage(moodResponses[mood]);
+        }, 500);
+      });
+    });
+
+    input.addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleUserInput();
+      }
+    });
   </script>
 </body>
 </html>
