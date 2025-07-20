@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CalmMind Chatbot</title>
+  <title>Cherry 🍒 – Your Emotional Support Companion</title>
   <link href="https://fonts.googleapis.com/css2?family=Lexend&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Lexend', sans-serif;
-      background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
-      background-size: cover;
-      backdrop-filter: blur(5px);
+      /* Background is handled by the video now, but keeping a fallback */
+      background: linear-gradient(135deg, #fbeaff, #ddf3ff);
       margin: 0;
       padding: 0;
       height: 100vh;
@@ -18,15 +17,29 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      overflow: hidden; /* Prevent scrollbar due to video */
+    }
+
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1; /* Behind all content */
     }
 
     .header {
-      background-color: rgba(255, 255, 255, 0.75);
+      background-color: rgba(255, 255, 255, 0.85); /* Slightly less transparent */
       padding: 16px;
       text-align: center;
       font-size: 1.3rem;
       font-weight: bold;
       border-radius: 0 0 20px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Subtle shadow */
+      position: relative; /* To be above the video */
+      z-index: 2;
     }
 
     .mood-buttons {
@@ -36,6 +49,8 @@
       gap: 10px;
       padding: 10px;
       margin: 10px;
+      position: relative;
+      z-index: 2;
     }
 
     .mood {
@@ -45,38 +60,46 @@
       border-radius: 20px;
       font-size: 1rem;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     .mood:hover {
       background-color: #c3dafe;
+      transform: translateY(-2px);
     }
 
     .chat-container {
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: rgba(255, 255, 255, 0.7); /* More transparent for background */
       margin: 10px;
       padding: 15px;
       border-radius: 20px;
-      height: 45vh;
+      height: calc(100vh - 250px); /* Adjusted height to fit header, buttons, input */
+      max-height: 50vh; /* Max height for larger screens */
       overflow-y: auto;
       display: flex;
       flex-direction: column;
+      flex-grow: 1; /* Allows container to grow */
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .bot-message, .user-message {
       padding: 10px 15px;
-      margin: 10px;
-      max-width: 70%;
+      margin: 8px 10px; /* Slightly reduced margin for tighter chat */
+      max-width: 75%; /* Increased max-width for longer messages */
       border-radius: 15px;
       word-wrap: break-word;
+      line-height: 1.4; /* Better readability */
     }
 
     .bot-message {
-      background-color: #f0f4ff;
+      background-color: #e0f2fe; /* Lighter blue */
       align-self: flex-start;
     }
 
     .user-message {
-      background-color: #ffeaea;
+      background-color: #fce4ec; /* Lighter pink */
       align-self: flex-end;
       text-align: right;
     }
@@ -87,40 +110,63 @@
       align-items: center;
       padding: 10px;
       gap: 10px;
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: rgba(255, 255, 255, 0.85); /* Consistent transparency */
       border-radius: 20px 20px 0 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05); /* Subtle shadow */
+      position: relative;
+      z-index: 2;
     }
 
     input {
       flex: 1;
       border-radius: 20px;
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 10px 15px; /* Added horizontal padding */
       font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+        outline: none;
+        border-color: #7ac9f9;
     }
 
     button.send-btn {
       border-radius: 20px;
-      padding: 10px 15px;
+      padding: 10px 20px; /* Increased padding for better click area */
       border: none;
       background-color: #7ac9f9;
       color: white;
       cursor: pointer;
       font-size: 1rem;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
+    button.send-btn:hover {
+      background-color: #5bb3e0;
+      transform: translateY(-1px);
+    }
+    #bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+    
   </style>
 </head>
 <body>
-    <script>
-  const userName = localStorage.getItem("cherryUser") || "there";
-  document.getElementById("chatHeader").innerText = `🍒 Cherry – Hello, ${userName}`;
-  document.querySelector(".chat-container").insertAdjacentHTML("beforeend", `
-    <div class="bot-message">Hi ${userName}, I’m Cherry. How are you feeling today?</div>
-  `);
-</script>
-
-
-  <div class="header">🌸 Cherry– I’m here for you</div>
+  <video autoplay muted loop id="bg-video">
+    <source src="assets/video/hackit.mp4.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <nav>
+    <a href="login.html"></a>
+    </nav>
+  </nav>
+  <div class="header" id="chatHeader"></div>
 
   <div class="mood-buttons">
     <button class="mood">😢 Sad</button>
@@ -128,35 +174,120 @@
     <button class="mood">😠 Angry</button>
     <button class="mood">😞 Lonely</button>
     <button class="mood">🌀 Overwhelmed</button>
+    <button class="mood">😌 Calm</button>
+    <button class="mood">😊 Happy</button>
   </div>
 
   <div class="chat-container" id="chat">
-    <div class="bot-message">Hello, how are you feeling today? You can select a mood or type below.</div>
-  </div>
+    </div>
 
   <div class="input-area">
-    <input type="text" id="userInput" placeholder="Type here to chat..." />
+    <input type="text" id="userInput" placeholder="Type here to chat..." aria-label="Type your message here" />
     <button class="send-btn" onclick="handleUserInput()">Send</button>
   </div>
 
   <script>
     const chat = document.getElementById('chat');
     const input = document.getElementById('userInput');
+    const userName = localStorage.getItem("cherryUser") || "there"; // Default to "there" if no name
+
+    // Set header text
+   document.getElementById("chatHeader").innerText = `🌸 Cherry – Hello, ${userName}! I'm here for you.`;
+
+
+    // Append initial bot message
+   appendMessage(`Hi ${userName}, I’m Cherry. How are you feeling today? You can select a mood or type below.`);
+
+
 
     const moodResponses = {
-      "sad": "I'm really sorry you're feeling this way. Want to try a calming breathing exercise?",
-      "anxious": "Anxiety can be heavy. Let's take a deep breath together. Inhale… Exhale… Want more grounding tips?",
-      "angry": "It's okay to feel angry. Try writing what you're feeling or squeezing a soft pillow.",
-      "lonely": "You're not alone right now. I'm here with you. Want to hear something uplifting?",
-      "overwhelmed": "Everything might feel like too much right now. Let's slow down. One thing at a time. Want a short calming tip?"
+      "sad": [
+        "I'm really sorry to hear that. It's okay to feel sad. Can you tell me more about what's making you feel this way?",
+        "Feeling sad is tough. I'm here to listen without judgment. Is there anything specific on your mind?",
+        "It sounds like you're going through a difficult time. Sometimes a deep breath helps. Would you like to try a calming exercise?"
+      ],
+      "anxious": [
+        "Anxiety can be really overwhelming. Let's take a deep breath together. Inhale… Exhale… Want to try another grounding technique?",
+        "I understand that feeling of anxiety. What's causing you to feel anxious right now?",
+        "It's brave of you to acknowledge your anxiety. I'm here to support you. Would you like some tips for managing it?"
+      ],
+      "angry": [
+        "It's valid to feel angry sometimes. What's making you feel this way? Sometimes expressing it can help.",
+        "Anger can be a powerful emotion. Do you want to talk about the situation, or would you prefer a distraction?",
+        "When anger builds up, it can be tough. Try squeezing a soft pillow or writing down what's bothering you. What do you think?"
+      ],
+      "lonely": [
+        "You're not alone right now. I'm here with you. Can you tell me more about what makes you feel lonely?",
+        "Feeling lonely can be painful. Remember, even in difficult moments, connection is possible. Would you like some uplifting words?",
+        "I'm here to be a companion. What kind of conversation would help you feel less alone?"
+      ],
+      "overwhelmed": [
+        "Everything might feel like too much right now. Let's slow down. One thing at a time. What's the biggest thing on your mind?",
+        "It sounds like you're carrying a heavy load. It's okay to feel overwhelmed. Would you like a short calming tip?",
+        "When you feel overwhelmed, it's hard to think clearly. Let's focus on one small step you can take today."
+      ],
+      "calm": [
+        "That's wonderful to hear! What's contributing to your sense of calm today?",
+        "I'm so glad you're feeling calm! Is there anything specific you did to achieve this feeling?",
+        "It's great to know you're feeling peaceful. How can I help you maintain this feeling?"
+      ],
+      "happy": [
+        "That's fantastic! What made you feel happy today? I'd love to hear about it!",
+        "Happiness is a beautiful feeling. What's bringing joy into your life?",
+        "I'm delighted to know you're feeling happy! Let's celebrate that. Is there anything you want to share?"
+      ],
+      // General prompts or responses for various situations
+      "help": "If you're in a crisis, please reach out to a professional immediately. 📞 India Helpline: 9152987821. I'm here for support, but not a substitute for human help.",
+      "breathe": "Sure, let's take a moment. Inhale slowly through your nose for 4 counts... hold for 4... exhale slowly through your mouth for 6 counts. Repeat 3 times. How do you feel?",
+      "quote": [
+        "💬 'You are braver than you believe, stronger than you seem, and smarter than you think.' - A.A. Milne",
+        "💬 'The best way out is always through.' - Robert Frost",
+        "💬 'What lies behind us and what lies before us are tiny matters compared to what lies within us.' - Ralph Waldo Emerson"
+      ],
+      "thank you": [
+          "You're most welcome! I'm glad I could be of some help.",
+          "My pleasure! Is there anything else I can do for you?",
+          "No problem at all! Happy to help."
+      ],
+      "hello": [
+    `Hi ${userName}! How are you doing today?`,
+    `Hello ${userName}! What's on your mind?`,
+    `Hey there! How can I support you today?`
+    ],
+
+      
+      "how are you": [
+          "I'm an AI designed to support you, so I don't have feelings like humans do. But I'm here and ready to listen to you. How are you feeling?",
+          "I'm functioning perfectly and ready to chat! What about you, how's your day going?",
+          "As a chatbot, I don't experience emotions, but I'm here to help you with yours. What's on your heart?"
+      ],
+      "default_fallback": [
+        "I'm here with you. Could you tell me a little more about what's on your mind?",
+        "Sometimes it helps to just talk. What's been happening?",
+        "I might not understand everything, but I'm listening. Please elaborate a bit more.",
+        "I'm here to support you. Would you like to talk about your feelings, or maybe try a quick relaxation technique?"
+      ],
+      "clarify": [
+        "Could you please tell me more about that?",
+        "I'm not quite sure I understand. Can you explain in a different way?",
+        "Please tell me a bit more so I can understand better."
+      ]
     };
+
+    function getRandomResponse(category) {
+      const responses = moodResponses[category];
+      if (responses && responses.length > 0) {
+        return responses[Math.floor(Math.random() * responses.length)];
+      }
+      return moodResponses.default_fallback[Math.floor(Math.random() * moodResponses.default_fallback.length)];
+    }
 
     function appendMessage(message, sender = 'bot') {
       const msg = document.createElement('div');
       msg.className = sender === 'bot' ? 'bot-message' : 'user-message';
-      msg.innerText = message;
+      msg.innerHTML = message; // Use innerHTML to allow for simple formatting if needed (like emojis)
       chat.appendChild(msg);
-      chat.scrollTop = chat.scrollHeight;
+      chat.scrollTop = chat.scrollHeight; // Auto-scroll to latest message
     }
 
     function handleUserInput() {
@@ -164,39 +295,73 @@
       if (text === '') return;
 
       appendMessage(text, 'user');
-      input.value = '';
+      input.value = ''; // Clear input field
 
+      // Give a slight delay for a more natural feel
       setTimeout(() => {
         respondToUser(text);
-      }, 600);
+      }, 700);
     }
 
     function respondToUser(text) {
       const lower = text.toLowerCase();
-      if (lower.includes('help')) {
-        appendMessage("If you're in crisis, please reach out. 📞 India Helpline: 9152987821");
-      } else if (lower.includes('breathe')) {
-        appendMessage("Sure. Inhale slowly... hold... exhale. Repeat 3 times. 🌬️");
-      } else if (lower.includes('quote')) {
-        appendMessage("💬 'You are braver than you believe, stronger than you seem, and smarter than you think.'");
-      } else {
-        appendMessage("I'm here with you. Would you like a breathing exercise, a quote, or to talk about your feelings?");
+
+      // Check for specific commands/keywords
+      if (lower.includes('help') || lower.includes('crisis')) {
+        appendMessage(moodResponses.help);
+      } else if (lower.includes('breathe') || lower.includes('breathing') || lower.includes('relax')) {
+        appendMessage(moodResponses.breathe);
+      } else if (lower.includes('quote') || lower.includes('inspiration') || lower.includes('uplift')) {
+        appendMessage(getRandomResponse('quote'));
+      } else if (lower.includes('thank you') || lower.includes('thanks')) {
+        appendMessage(getRandomResponse('thank you'));
+      } else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+        appendMessage(getRandomResponse('hello'));
+      } else if (lower.includes('how are you') || lower.includes('how r u')) {
+        appendMessage(getRandomResponse('how are you'));
+      }
+      // Check for emotional keywords
+      else if (lower.includes('sad') || lower.includes('down') || lower.includes('unhappy')) {
+        appendMessage(getRandomResponse('sad'));
+      } else if (lower.includes('anxious') || lower.includes('nervous') || lower.includes('worry')) {
+        appendMessage(getRandomResponse('anxious'));
+      } else if (lower.includes('angry') || lower.includes('frustrated') || lower.includes('mad')) {
+        appendMessage(getRandomResponse('angry'));
+      } else if (lower.includes('lonely') || lower.includes('alone')) {
+        appendMessage(getRandomResponse('lonely'));
+      } else if (lower.includes('overwhelmed') || lower.includes('stressed') || lower.includes('too much')) {
+        appendMessage(getRandomResponse('overwhelmed'));
+      } else if (lower.includes('calm') || lower.includes('peaceful') || lower.includes('relaxed')) {
+        appendMessage(getRandomResponse('calm'));
+      } else if (lower.includes('happy') || lower.includes('good') || lower.includes('great') || lower.includes('joyful')) {
+        appendMessage(getRandomResponse('happy'));
+      }
+      // Simple length check for clarification
+      else if (text.split(' ').length < 3 && !lower.includes('yes') && !lower.includes('no')) {
+        appendMessage(getRandomResponse('clarify'));
+      }
+      // Default fallback if nothing else matches
+      else {
+        appendMessage(getRandomResponse('default_fallback'));
       }
     }
 
+    // Event listeners for mood buttons
     document.querySelectorAll('.mood').forEach(btn => {
       btn.addEventListener('click', () => {
-        const mood = btn.innerText.split(' ')[1].toLowerCase();
-        appendMessage(`I'm feeling ${mood}.`, 'user');
-        setTimeout(() => {
-          appendMessage(moodResponses[mood]);
+        const moodText = btn.innerText.split(' ')[1].toLowerCase(); // e.g., "sad" from "😢 Sad"
+        appendMessage(`I'm feeling ${moodText}.`, 'user');
+
+          // Use the moodText directly to get a response from moodResponses
+          appendMessage(getRandomResponse(moodText));
         }, 500);
       });
-    });
+    ;
 
+    // Event listener for Enter key in input field
     input.addEventListener("keypress", function(event) {
       if (event.key === "Enter") {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission behavior
         handleUserInput();
       }
     });

@@ -16,18 +16,34 @@
       margin: 0;
       flex-direction: column;
       text-align: center;
+      padding: 20px;
     }
 
     .login-box {
       background-color: white;
-      padding: 40px;
+      padding: 40px 20px;
       border-radius: 20px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #d14f91;
+      color: white;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
     }
 
     h1 {
       font-size: 2rem;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       color: #d14f91;
     }
 
@@ -53,28 +69,97 @@
     button:hover {
       background-color: #c03c7e;
     }
+
+    .bottom-text {
+      margin-top: 15px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .bottom-text a {
+      color: #d14f91;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 5px;
+    }
+
+    .bottom-text a:hover {
+      text-decoration: underline;
+    }
+    #bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
   </style>
 </head>
 <body>
+   <video autoplay muted loop id="bg-video">
+    <source src="assets/video/hackit.mp4.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <nav>
+    <a href="index.html"></a>
+  </nav>
 
   <div class="login-box">
-    <h1>🍒 Welcome to Cherry</h1>
-    <p>Your stress support companion</p>
+    <div class="logo">🍒</div>
+    <h1>Cherry</h1>
+    
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
     <input type="text" id="username" placeholder="Enter your name" />
     <br />
-    <button onclick="startChat()">Start Chatting</button>
+    <button onclick="signUp()">Sign Up</button>
+    <div class="bottom-text">
+      Already have an account?
+      <a href="index.html">Login</a>
+    </div>
   </div>
 
-  <script>
-    function startChat() {
-      const name = document.getElementById("username").value.trim();
-      if (name === "") {
-        alert("Please enter your name");
+  <!-- Firebase SDKs -->
+  <script type="module">
+    // Firebase Config - Replace with yours
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFZ0f8A1AGfbkCC3txLB_UfwvMkaOcDcw",
+  authDomain: "cherry-chatbot-1095e.firebaseapp.com",
+  projectId: "cherry-chatbot-1095e",
+  storageBucket: "cherry-chatbot-1095e.firebasestorage.app",
+  messagingSenderId: "142304138382",
+  appId: "1:142304138382:web:5f417c0acbc42ae27e65df"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.signUp = function () {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const username = document.getElementById("username").value.trim();
+
+      if (!email || !password || !username) {
+        alert("Please fill in all fields");
         return;
       }
-      localStorage.setItem("cherryUser", name);
-      window.location.href = "index.html";  // redirect to chatbot
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          localStorage.setItem("cherryUser", username);
+          alert("Sign up successful!");
+          window.location.href = "log.html";
+        })
+        .catch((error) => {
+          alert("Error: " + error.message);
+        });
     }
   </script>
+
 </body>
 </html>
